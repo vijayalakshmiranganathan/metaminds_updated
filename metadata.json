@@ -1,0 +1,8 @@
+{
+  "name": "Remix Medisync - Clinical EHR \u0026 ICU Charting",
+  "description": "Hospital point-of-care electronic health records, real-time telemetry, electronic MAR, ICD-10 diagnoses, and computerized physician order entry for intensive care teams.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
