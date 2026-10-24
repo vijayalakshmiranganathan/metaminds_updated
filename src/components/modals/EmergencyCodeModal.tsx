@@ -58,8 +58,12 @@ export const EmergencyCodeModal: React.FC<EmergencyCodeModalProps> = ({
       <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border-2 border-[#ba1a1a] flex flex-col overflow-hidden">
         {/* Urgent Header */}
         <div className="p-4 bg-[#ba1a1a] text-white flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[28px] animate-bounce">emergency</span>
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/assets/aistudio/WhatsApp_Image_2026-10-24_at_7.35.39_PM_ec3e6564.jpeg"
+              alt="Emergency Siren"
+              className="w-8 h-8 object-contain animate-bounce brightness-110 drop-shadow-sm"
+            />
             <div>
               <h2 className="text-base font-bold uppercase tracking-wider">HOSPITAL CODE ACTIVATION</h2>
               <p className="text-xs text-[#ffdad6]">

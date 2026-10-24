@@ -934,6 +934,7 @@ export default function App() {
             <ChartScreen
               patient={currentPatient}
               appRole={appRole}
+              language={language}
               doctorAuth={doctorAuth}
               onOpenDoctorLogin={() => setIsDoctorLoginOpen(true)}
               onToggleDiagnosisPrivacy={handleToggleDiagnosisPrivacy}

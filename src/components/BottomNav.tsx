@@ -41,10 +41,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   ];
 
   const wellnessNavItems: NavItem[] = [
-    { id: 'wellness_main', label: 'Wellness', icon: 'spa' },
-    { id: 'appointments', label: 'Bookings', icon: 'calendar_month' },
-    { id: 'records_vault', label: 'Vault', icon: 'folder_shared' },
-    { id: 'payments_billing', label: 'Insurance', icon: 'loyalty' },
+    { id: 'wellness_main', label: t('wellness'), icon: 'spa' },
+    { id: 'appointments', label: t('bookings'), icon: 'calendar_month' },
+    { id: 'records_vault', label: t('vault'), icon: 'folder_shared' },
+    { id: 'payments_billing', label: t('insurance'), icon: 'loyalty' },
   ];
 
   const navItems =

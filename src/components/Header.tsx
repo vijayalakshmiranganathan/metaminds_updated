@@ -52,8 +52,12 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-4xl mx-auto h-16 px-3 sm:px-4 flex items-center justify-between">
         {/* Brand Lockup */}
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-[#004357] flex items-center justify-center shadow-xs text-white shrink-0">
-            <span className="material-symbols-outlined text-[20px]">sync_saved_locally</span>
+          <div className="w-9 h-9 rounded-xl overflow-hidden shadow-xs border border-[#dce9ff] shrink-0 bg-white flex items-center justify-center">
+            <img
+              src="/assets/aistudio/WhatsApp_Image_2026-10-25_at_12.21.54_AM_4c858893.jpeg"
+              alt="Medisync App Icon"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-1.5 relative">
@@ -157,10 +161,10 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="text-[10px] text-[#70787d]">•</span>
               <span className="text-[10px] text-[#006398] font-bold">
                 {appRole === 'doctor'
-                  ? '🩺 Hospital EHR'
+                  ? t('hospital_ehr')
                   : appRole === 'wellness'
-                  ? '🌿 Wellness & Prevention'
-                  : '👤 Patient Portal'}
+                  ? t('wellness_prevention')
+                  : t('patient_portal')}
               </span>
             </div>
           </div>
@@ -172,36 +176,36 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="bg-[#eff4ff] p-0.5 rounded-lg border border-[#dce9ff] flex items-center">
             <button
               onClick={() => onToggleAppRole('doctor')}
-              className={`px-1.5 py-1 rounded-md text-[10px] font-bold transition-all ${
+              className={`px-1.5 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
                 appRole === 'doctor'
                   ? 'bg-[#004357] text-white shadow-xs'
                   : 'text-[#40484c] hover:text-[#0b1c30]'
               }`}
               title="Doctor EHR (ICU Bedside & MAR)"
             >
-              Doctor
+              {t('doctor')}
             </button>
             <button
               onClick={() => onToggleAppRole('patient')}
-              className={`px-1.5 py-1 rounded-md text-[10px] font-bold transition-all ${
+              className={`px-1.5 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
                 appRole === 'patient'
                   ? 'bg-[#004357] text-white shadow-xs'
                   : 'text-[#40484c] hover:text-[#0b1c30]'
               }`}
               title="Patient & Family Care Portal"
             >
-              Patient
+              {t('patient')}
             </button>
             <button
               onClick={() => onToggleAppRole('wellness')}
-              className={`px-1.5 py-1 rounded-md text-[10px] font-bold transition-all ${
+              className={`px-1.5 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
                 appRole === 'wellness'
                   ? 'bg-[#006141] text-white shadow-xs'
                   : 'text-[#00472f] hover:text-[#0b1c30]'
               }`}
               title="Wellness & Prevention Hub (Healthy Living)"
             >
-              Wellness
+              {t('wellness')}
             </button>
           </div>
 
@@ -249,10 +253,14 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onEmergencyClick}
             aria-label="Emergency SOS"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-[#ba1a1a] hover:bg-[#ffdad6] active:scale-95 transition-all"
+            className="w-9 h-9 rounded-full flex items-center justify-center p-1 hover:bg-[#ffdad6]/70 active:scale-95 transition-all cursor-pointer relative"
             title="Emergency SOS / Ambulance Dispatch"
           >
-            <span className="material-symbols-outlined text-[22px] animate-pulse">emergency</span>
+            <img
+              src="/assets/aistudio/WhatsApp_Image_2026-10-24_at_7.35.39_PM_ec3e6564.jpeg"
+              alt="Emergency SOS Siren"
+              className="w-7 h-7 object-contain drop-shadow-xs animate-pulse"
+            />
           </button>
 
           {/* User Profile Avatar */}
@@ -322,7 +330,7 @@ export const Header: React.FC<HeaderProps> = ({
                           className="w-full text-left py-1 text-[#006398] font-semibold flex items-center gap-1.5 hover:underline cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[16px]">family_restroom</span>
-                          <span>Family Diagnosis Privacy</span>
+                          <span>{t('family_privacy')}</span>
                         </button>
                       )}
                       <button
@@ -333,7 +341,7 @@ export const Header: React.FC<HeaderProps> = ({
                         className="w-full text-left py-1 text-[#006398] font-semibold flex items-center gap-1.5 hover:underline cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-[16px]">family_restroom</span>
-                        <span>Switch Family Member</span>
+                        <span>{t('switch_family_member')}</span>
                       </button>
                     </>
                   )}
@@ -347,23 +355,23 @@ export const Header: React.FC<HeaderProps> = ({
                       className="w-full text-left py-1.5 px-2 rounded-lg bg-[#eff4ff] hover:bg-[#dce9ff] text-[#004357] font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer my-1.5 border border-[#dce9ff]"
                     >
                       <span className="material-symbols-outlined text-[16px] text-[#006398]">how_to_reg</span>
-                      <span>Switch User / Edit Details</span>
+                      <span>{t('switch_user_edit')}</span>
                     </button>
                   )}
 
                   <div className="flex justify-between pt-1 border-t border-[#f0f4ff]">
                     <span>Active Portal:</span>{' '}
                     <strong className="text-[#0b1c30]">
-                      {appRole === 'doctor' ? 'Doctor EHR' : appRole === 'wellness' ? 'Wellness Hub' : 'Patient Vault'}
+                      {appRole === 'doctor' ? t('doctor_view') : appRole === 'wellness' ? t('wellness_hub') : t('patient_view')}
                     </strong>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setShowProfileMenu(false)}
-                  className="mt-3 w-full py-1 text-center text-xs font-semibold text-[#006398] bg-[#eff4ff] hover:bg-[#dce9ff] rounded-lg transition-colors"
+                  className="mt-3 w-full py-1 text-center text-xs font-semibold text-[#006398] bg-[#eff4ff] hover:bg-[#dce9ff] rounded-lg transition-colors cursor-pointer"
                 >
-                  Close
+                  {t('close')}
                 </button>
               </div>
             )}

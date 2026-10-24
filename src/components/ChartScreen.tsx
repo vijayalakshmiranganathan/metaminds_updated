@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ClinicalNote, DoctorAuth, Medication, Patient } from '../types/clinical';
+import { LanguageCode, getTranslation } from '../utils/i18n';
 
 interface ChartScreenProps {
   patient: Patient;
   appRole?: 'doctor' | 'patient' | 'wellness';
+  language?: LanguageCode;
   doctorAuth?: DoctorAuth;
   onOpenDoctorLogin?: () => void;
   onToggleDiagnosisPrivacy?: (dxId: string) => void;
@@ -22,6 +24,7 @@ interface ChartScreenProps {
 export const ChartScreen: React.FC<ChartScreenProps> = ({
   patient,
   appRole = 'patient',
+  language = 'en',
   doctorAuth,
   onOpenDoctorLogin,
   onToggleDiagnosisPrivacy,
@@ -36,6 +39,7 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
   onOpenWellness,
   onShowToast,
 }) => {
+  const t = (k: string) => getTranslation(language, k);
   const [activeTab, setActiveTab] = useState<'notes' | 'diagnoses' | 'medications' | 'labs'>('notes');
   const [activeLabPanel, setActiveLabPanel] = useState<number>(0);
   const [avatarError, setAvatarError] = useState(false);
@@ -238,7 +242,7 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
           <div className="flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[#004357] text-[18px]">monitor_heart</span>
             <span className="font-label-md text-[12px] text-[#0b1c30] font-bold uppercase tracking-wider">
-              Current Telemetry
+              {t('current_telemetry')}
             </span>
           </div>
           <button
@@ -352,7 +356,7 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
             }`}
             onClick={() => switchTab('notes')}
           >
-            Notes
+            {t('clinical_notes_tab')}
           </button>
           <button
             className={`flex-1 py-2 px-2.5 rounded-lg font-label-md text-[12px] text-center transition-all whitespace-nowrap cursor-pointer ${
@@ -362,7 +366,7 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
             }`}
             onClick={() => switchTab('diagnoses')}
           >
-            Diagnoses
+            {t('diagnoses_tab')}
           </button>
           <button
             className={`flex-1 py-2 px-2.5 rounded-lg font-label-md text-[12px] text-center transition-all whitespace-nowrap cursor-pointer ${
@@ -372,7 +376,7 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
             }`}
             onClick={() => switchTab('medications')}
           >
-            Medications
+            {t('medications_tab')}
           </button>
           <button
             className={`flex-1 py-2 px-2.5 rounded-lg font-label-md text-[12px] text-center transition-all whitespace-nowrap cursor-pointer ${
@@ -382,7 +386,7 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
             }`}
             onClick={() => switchTab('labs')}
           >
-            Lab Results
+            {t('labs_tab')}
           </button>
         </div>
       </section>
@@ -761,7 +765,7 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
             className="flex-1 h-12 rounded-xl bg-[#004357] hover:bg-[#0d5c75] text-white font-label-lg text-[14px] font-semibold flex items-center justify-center gap-1.5 shadow-xs active:scale-[0.98] transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-[20px]">add_circle</span>
-            <span>New Rx Order</span>
+            <span>{t('new_rx_order')}</span>
           </button>
 
           {/* Update Vitals / Rapid Entry */}
@@ -770,7 +774,7 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
             className="flex-1 h-12 rounded-xl bg-[#dce9ff] hover:bg-[#cbdbf5] text-[#0b1c30] font-label-lg text-[14px] font-semibold flex items-center justify-center gap-1.5 shadow-xs active:scale-[0.98] transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-[#006398] text-[20px]">vital_signs</span>
-            <span>Update Vitals</span>
+            <span>{t('update_vitals')}</span>
           </button>
         </div>
       </div>

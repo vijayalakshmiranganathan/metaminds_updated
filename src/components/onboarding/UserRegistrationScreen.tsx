@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { UserRegistrationData } from '../../types/clinical';
-import { LANGUAGES, LanguageCode, getTranslation } from '../../utils/i18n';
+import {
+  LANGUAGES,
+  LanguageCode,
+  getTranslation,
+  translateAllergy,
+  translateCondition,
+} from '../../utils/i18n';
 
 interface UserRegistrationScreenProps {
   onComplete: (data: UserRegistrationData) => void;
@@ -46,7 +52,8 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
   const [city, setCity] = useState(initialData?.city || 'Mumbai, Maharashtra');
   const [bloodGroup, setBloodGroup] = useState(initialData?.bloodGroup || 'O+');
   const [abhaId, setAbhaId] = useState(
-    initialData?.abhaId || `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}@abdm`
+    initialData?.abhaId ||
+      `91-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}@abdm`
   );
   const [healthGoal, setHealthGoal] = useState(initialData?.healthGoal || 'Routine Health & Telemetry');
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>(
@@ -126,18 +133,17 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) {
-      setFormError('Please enter your full name to generate your health record.');
+      setFormError(language === 'hi' ? 'कृपया अपना पूरा नाम दर्ज करें।' : 'Please enter your full name to generate your health record.');
       return;
     }
 
     if (age <= 0 || age > 125) {
-      setFormError('Please enter a valid age between 1 and 120.');
+      setFormError(language === 'hi' ? 'कृपया 1 से 120 के बीच वैध आयु दर्ज करें।' : 'Please enter a valid age between 1 and 120.');
       return;
     }
 
     setFormError(null);
 
-    // Collect allergies & conditions including custom
     const finalAllergies = [...selectedAllergies];
     if (customAllergy.trim() && !finalAllergies.includes(customAllergy.trim())) {
       finalAllergies.push(customAllergy.trim());
@@ -171,7 +177,6 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
     onComplete(userData);
   };
 
-  // Avatar placeholder based on name initials
   const initials = fullName.trim()
     ? fullName
         .trim()
@@ -188,18 +193,22 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#e5eeff] px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-[#004357] flex items-center justify-center text-white shadow-xs">
-              <span className="material-symbols-outlined text-[24px]">sync_saved_locally</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-xs border border-[#dce9ff] shrink-0 bg-white flex items-center justify-center">
+              <img
+                src="/assets/aistudio/WhatsApp_Image_2026-10-25_at_12.21.54_AM_4c858893.jpeg"
+                alt="Medisync Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-[18px] text-[#004357] tracking-tight">MEDISYNC</span>
+                <span className="font-bold text-[18px] text-[#004357] tracking-tight">{t('app_title')}</span>
                 <span className="px-2 py-0.5 rounded-full bg-[#eff4ff] text-[#006398] text-[10px] font-bold border border-[#dce9ff]">
-                  ABDM Verified
+                  ABDM {t('verified')}
                 </span>
               </div>
               <p className="text-[11px] text-[#40484c]">
-                Clinical EHR • Patient Health Portal • Telemetry
+                {t('hospital_ehr')} • {t('patient_portal')} • {t('current_telemetry')}
               </p>
             </div>
           </div>
@@ -209,7 +218,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
             <button
               type="button"
               onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-              className="px-2.5 py-1.5 rounded-lg bg-[#eff4ff] hover:bg-[#dce9ff] text-[#004357] text-xs font-semibold flex items-center gap-1 transition-colors border border-[#dce9ff]"
+              className="px-2.5 py-1.5 rounded-lg bg-[#eff4ff] hover:bg-[#dce9ff] text-[#004357] text-xs font-semibold flex items-center gap-1 transition-colors border border-[#dce9ff] cursor-pointer"
             >
               <span className="material-symbols-outlined text-[16px] text-[#006398]">translate</span>
               <span>{LANGUAGES.find((l) => l.code === language)?.nativeName || 'English'}</span>
@@ -219,7 +228,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
             {showLanguageMenu && (
               <div className="absolute right-0 top-10 w-44 bg-white rounded-xl shadow-xl border border-[#dce9ff] py-1 z-50">
                 <div className="px-3 py-1 text-[10px] font-bold text-[#70787d] uppercase tracking-wider border-b border-[#e5eeff]">
-                  Language / भाषा
+                  Language / भाषा / ભાષા
                 </div>
                 <div className="max-h-56 overflow-y-auto no-scrollbar">
                   {LANGUAGES.map((lang) => (
@@ -230,7 +239,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                         onSelectLanguage(lang.code);
                         setShowLanguageMenu(false);
                       }}
-                      className={`w-full text-left px-3 py-1.5 text-xs flex items-center justify-between ${
+                      className={`w-full text-left px-3 py-1.5 text-xs flex items-center justify-between cursor-pointer ${
                         lang.code === language
                           ? 'bg-[#e5eeff] text-[#004357] font-bold'
                           : 'text-[#0b1c30] hover:bg-[#eff4ff]'
@@ -256,14 +265,13 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
           <div className="relative z-10 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-white text-[11px] font-bold tracking-wide mb-2 backdrop-blur-xs">
               <span className="w-2 h-2 rounded-full bg-[#4edea3] animate-pulse"></span>
-              PATIENT HEALTH ONBOARDING & REGISTRATION
+              {t('patient_onboarding_title')}
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
-              Welcome! Please Enter Your Details
+              {t('welcome_enter_details')}
             </h1>
             <p className="text-sm text-[#bde9ff] leading-relaxed">
-              Enter your details to generate your official Ayushman Bharat Digital Health Account (ABHA)
-              and access your personal medical records, electronic vitals, and care telemetry.
+              {t('onboarding_desc')}
             </p>
           </div>
         </div>
@@ -287,21 +295,21 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                     1
                   </span>
                   <h2 className="font-bold text-sm text-[#004357] uppercase tracking-wide">
-                    Personal Identity & Contact
+                    {t('personal_identity')}
                   </h2>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-bold text-[#40484c] mb-1">
-                      Full Name <span className="text-[#ba1a1a]">*</span>
+                      {t('full_name')} <span className="text-[#ba1a1a]">*</span>
                     </label>
                     <input
                       type="text"
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Rahul Sharma or Priya Verma"
+                      placeholder="e.g. Rahul Sharma"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-[#bfc8cd] focus:border-[#006398] focus:ring-2 focus:ring-[#006398]/20 outline-none text-sm transition-all text-[#0b1c30] font-medium"
                       autoFocus
                     />
@@ -309,7 +317,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
 
                   <div>
                     <label className="block text-xs font-bold text-[#40484c] mb-1">
-                      Age (Years) <span className="text-[#ba1a1a]">*</span>
+                      {t('age_years')} <span className="text-[#ba1a1a]">*</span>
                     </label>
                     <div className="flex items-center gap-2">
                       <input
@@ -327,7 +335,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                             key={quickAge}
                             type="button"
                             onClick={() => setAge(quickAge)}
-                            className="px-2 py-1 rounded-lg bg-[#eff4ff] hover:bg-[#dce9ff] text-[10px] font-bold text-[#004357]"
+                            className="px-2 py-1 rounded-lg bg-[#eff4ff] hover:bg-[#dce9ff] text-[10px] font-bold text-[#004357] cursor-pointer"
                           >
                             {quickAge}y
                           </button>
@@ -337,28 +345,31 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-[#40484c] mb-1">Gender</label>
+                    <label className="block text-xs font-bold text-[#40484c] mb-1">{t('gender')}</label>
                     <div className="grid grid-cols-3 gap-1 bg-[#eff4ff] p-1 rounded-xl border border-[#dce9ff]">
-                      {(['Male', 'Female', 'Other'] as const).map((g) => (
-                        <button
-                          key={g}
-                          type="button"
-                          onClick={() => setGender(g)}
-                          className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
-                            gender === g
-                              ? 'bg-[#004357] text-white shadow-xs'
-                              : 'text-[#40484c] hover:text-[#0b1c30]'
-                          }`}
-                        >
-                          {g}
-                        </button>
-                      ))}
+                      {(['Male', 'Female', 'Other'] as const).map((g) => {
+                        const genderLabel = g === 'Male' ? t('male') : g === 'Female' ? t('female') : t('other');
+                        return (
+                          <button
+                            key={g}
+                            type="button"
+                            onClick={() => setGender(g)}
+                            className={`py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                              gender === g
+                                ? 'bg-[#004357] text-white shadow-xs'
+                                : 'text-[#40484c] hover:text-[#0b1c30]'
+                            }`}
+                          >
+                            {genderLabel}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-[#40484c] mb-1">
-                      Mobile Number
+                      {t('mobile_number')}
                     </label>
                     <div className="flex items-center rounded-xl border border-[#bfc8cd] focus-within:border-[#006398] focus-within:ring-2 focus-within:ring-[#006398]/20 overflow-hidden bg-white">
                       <span className="px-2.5 py-2 bg-[#eff4ff] border-r border-[#dce9ff] text-xs font-bold text-[#004357]">
@@ -376,7 +387,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
 
                   <div>
                     <label className="block text-xs font-bold text-[#40484c] mb-1">
-                      Email Address (Optional)
+                      {t('email_address')}
                     </label>
                     <input
                       type="email"
@@ -389,7 +400,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
 
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-bold text-[#40484c] mb-1">
-                      City / Residence
+                      {t('city_residence')}
                     </label>
                     <input
                       type="text"
@@ -409,14 +420,14 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                     2
                   </span>
                   <h2 className="font-bold text-sm text-[#004357] uppercase tracking-wide">
-                    Blood Group & National Health ID (ABHA)
+                    {t('blood_group_step')}
                   </h2>
                 </div>
 
                 <div className="space-y-3.5">
                   <div>
                     <label className="block text-xs font-bold text-[#40484c] mb-1.5">
-                      Blood Group
+                      {t('blood_group')}
                     </label>
                     <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
                       {BLOOD_GROUPS.map((bg) => (
@@ -424,7 +435,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                           key={bg}
                           type="button"
                           onClick={() => setBloodGroup(bg)}
-                          className={`py-2 text-xs font-bold rounded-xl border transition-all ${
+                          className={`py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                             bloodGroup === bg
                               ? 'bg-[#006398] text-white border-[#006398] shadow-xs'
                               : 'bg-[#eff4ff] text-[#004357] border-[#dce9ff] hover:bg-[#dce9ff]'
@@ -439,15 +450,15 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="text-xs font-bold text-[#40484c]">
-                        Ayushman Bharat Health Account (ABHA ID)
+                        {t('abha_number_label')}
                       </label>
                       <button
                         type="button"
                         onClick={handleGenerateAbhaId}
-                        className="text-[11px] text-[#006398] font-bold hover:underline flex items-center gap-1"
+                        className="text-[11px] text-[#006398] font-bold hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-[14px]">autorenew</span>
-                        Auto-generate ID
+                        {t('auto_generate_id')}
                       </button>
                     </div>
                     <div className="flex items-center rounded-xl border border-[#bfc8cd] focus-within:border-[#006398] overflow-hidden bg-white">
@@ -460,7 +471,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                       />
                       <span className="px-3 py-2 bg-[#dcfce7] text-[#166534] text-[11px] font-bold border-l border-[#86efac] flex items-center gap-1 shrink-0">
                         <span className="material-symbols-outlined text-[14px]">verified</span>
-                        Verified
+                        {t('verified')}
                       </span>
                     </div>
                     <p className="text-[10px] text-[#70787d] mt-1">
@@ -477,7 +488,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                     3
                   </span>
                   <h2 className="font-bold text-sm text-[#004357] uppercase tracking-wide">
-                    Allergies & Medical History
+                    {t('allergies_history')}
                   </h2>
                 </div>
 
@@ -485,19 +496,20 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                   {/* Known Drug Allergies */}
                   <div>
                     <label className="block text-xs font-bold text-[#40484c] mb-1.5">
-                      Known Allergies & Drug Sensitivities
+                      {t('known_allergies')}
                     </label>
                     <div className="flex flex-wrap gap-1.5">
                       {COMMON_ALLERGIES.map((allergy) => {
                         const isSelected = selectedAllergies.includes(allergy);
                         const isNkda = allergy.includes('NKDA');
+                        const translatedLabel = translateAllergy(language, allergy);
 
                         return (
                           <button
                             key={allergy}
                             type="button"
                             onClick={() => toggleAllergy(allergy)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 cursor-pointer ${
                               isSelected
                                 ? isNkda
                                   ? 'bg-[#dcfce7] text-[#166534] border-[#86efac]'
@@ -508,7 +520,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                             <span className="material-symbols-outlined text-[14px]">
                               {isSelected ? (isNkda ? 'check_circle' : 'warning') : 'add'}
                             </span>
-                            <span>{allergy}</span>
+                            <span>{translatedLabel}</span>
                           </button>
                         );
                       })}
@@ -518,19 +530,20 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                   {/* Existing Conditions */}
                   <div>
                     <label className="block text-xs font-bold text-[#40484c] mb-1.5">
-                      Existing Conditions or Routine Monitoring
+                      {t('existing_conditions')}
                     </label>
                     <div className="flex flex-wrap gap-1.5">
                       {COMMON_CONDITIONS.map((cond) => {
                         const isSelected = selectedConditions.includes(cond);
                         const isHealthy = cond.includes('Healthy');
+                        const translatedCond = translateCondition(language, cond);
 
                         return (
                           <button
                             key={cond}
                             type="button"
                             onClick={() => toggleCondition(cond)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 cursor-pointer ${
                               isSelected
                                 ? isHealthy
                                   ? 'bg-[#dcfce7] text-[#166534] border-[#86efac]'
@@ -541,7 +554,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                             <span className="material-symbols-outlined text-[14px]">
                               {isSelected ? 'check' : 'add'}
                             </span>
-                            <span>{cond}</span>
+                            <span>{translatedCond}</span>
                           </button>
                         );
                       })}
@@ -557,27 +570,27 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                     4
                   </span>
                   <h2 className="font-bold text-sm text-[#004357] uppercase tracking-wide">
-                    Emergency Contact Details
+                    {t('emergency_contacts_step')}
                   </h2>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-2">
                   <div>
                     <label className="block text-xs font-bold text-[#40484c] mb-1">
-                      Emergency Contact Person
+                      {t('emergency_contact_person')}
                     </label>
                     <input
                       type="text"
                       value={emergencyContactName}
                       onChange={(e) => setEmergencyContactName(e.target.value)}
-                      placeholder="e.g. Anita Sharma (Spouse / Family)"
+                      placeholder="e.g. Anita Sharma"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-[#bfc8cd] focus:border-[#006398] outline-none text-sm font-medium text-[#0b1c30]"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-[#40484c] mb-1">
-                      Emergency Contact Phone
+                      {t('emergency_contact_phone')}
                     </label>
                     <input
                       type="tel"
@@ -597,7 +610,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                   className="w-full py-4 px-6 rounded-xl bg-[#004357] hover:bg-[#003444] active:scale-99 text-white font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[22px]">verified_user</span>
-                  <span>Create Health ID & Enter Portal →</span>
+                  <span>{t('create_health_id_btn')}</span>
                 </button>
                 <p className="text-center text-[11px] text-[#70787d] mt-2 flex items-center justify-center gap-1">
                   <span className="material-symbols-outlined text-[14px] text-[#166534]">check_circle</span>
@@ -610,24 +623,27 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
           {/* Right Column: Live Smart Health ID Card (4 cols on lg) */}
           <div className="lg:col-span-4 space-y-4">
             <div className="bg-gradient-to-br from-[#002b38] to-[#004357] rounded-2xl p-5 text-white shadow-xl border border-[#0d5c75] relative overflow-hidden">
-              {/* Decorative holographic strip */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#5bb8fe]/15 rounded-full blur-2xl pointer-events-none"></div>
 
               {/* Card Header */}
               <div className="flex items-center justify-between border-b border-white/15 pb-3 mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center text-white">
-                    <span className="material-symbols-outlined text-[16px]">health_and_safety</span>
+                  <div className="w-7 h-7 rounded-lg overflow-hidden bg-white/20 flex items-center justify-center shrink-0 border border-white/20">
+                    <img
+                      src="/assets/aistudio/WhatsApp_Image_2026-10-25_at_12.21.54_AM_4c858893.jpeg"
+                      alt="Medisync Logo"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div>
                     <span className="text-[11px] font-bold tracking-wider text-[#bde9ff] block">
-                      MEDISYNC HEALTH ID
+                      {t('medisync_health_id')}
                     </span>
                     <span className="text-[9px] text-white/60">GOVT. OF INDIA • ABDM COMPLIANT</span>
                   </div>
                 </div>
                 <span className="px-2 py-0.5 rounded-full bg-[#4edea3]/20 text-[#6ffbbe] text-[10px] font-bold border border-[#4edea3]/30">
-                  LIVE CARD
+                  {t('live_card')}
                 </span>
               </div>
 
@@ -643,7 +659,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                   <div className="flex items-center gap-1.5 text-xs text-[#bde9ff] mt-0.5">
                     <span>{age} yrs</span>
                     <span>•</span>
-                    <span>{gender}</span>
+                    <span>{gender === 'Male' ? t('male') : gender === 'Female' ? t('female') : t('other')}</span>
                     <span>•</span>
                     <span className="px-1.5 py-0.2 rounded bg-white/20 font-bold text-white text-[10px]">
                       {bloodGroup}
@@ -658,9 +674,9 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
               {/* ABHA Barcode & Number */}
               <div className="bg-white/10 rounded-xl p-2.5 backdrop-blur-xs border border-white/10 space-y-1 mb-3">
                 <div className="text-[9px] font-semibold text-[#bde9ff] uppercase tracking-wider flex items-center justify-between">
-                  <span>ABHA Number (Digital Health ID)</span>
+                  <span>{t('abha_number_label')}</span>
                   <span className="text-[#4edea3] text-[9px] font-bold flex items-center gap-0.5">
-                    <span className="material-symbols-outlined text-[11px]">verified</span> Active
+                    <span className="material-symbols-outlined text-[11px]">verified</span> {t('active')}
                   </span>
                 </div>
                 <div className="font-mono text-xs font-bold text-white tracking-wider">
@@ -671,7 +687,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
               {/* Health Badges */}
               <div className="space-y-1.5 text-[11px]">
                 <div className="flex items-center justify-between text-white/80">
-                  <span>Allergies:</span>
+                  <span>{t('known_allergies')}:</span>
                   <span
                     className={`font-semibold truncate max-w-[170px] ${
                       selectedAllergies.some((a) => !a.includes('NKDA'))
@@ -679,20 +695,20 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
                         : 'text-[#4edea3]'
                     }`}
                   >
-                    {selectedAllergies.join(', ')}
+                    {selectedAllergies.map((a) => translateAllergy(language, a)).join(', ')}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between text-white/80">
-                  <span>Primary Focus:</span>
+                  <span>{t('existing_conditions')}:</span>
                   <span className="font-semibold text-[#bde9ff] truncate max-w-[170px]">
-                    {selectedConditions[0] || 'Routine Health'}
+                    {selectedConditions.map((c) => translateCondition(language, c))[0] || 'Routine Health'}
                   </span>
                 </div>
 
                 {emergencyContactName && (
                   <div className="flex items-center justify-between text-white/80">
-                    <span>Emergency:</span>
+                    <span>{t('emergency_contact_person')}:</span>
                     <span className="font-semibold text-white truncate max-w-[170px]">
                       {emergencyContactName} ({emergencyContactPhone})
                     </span>
@@ -702,7 +718,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
 
               {/* QR Scan Simulation */}
               <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-[10px] text-white/60">
-                <span>Scan for Inpatient / Emergency Access</span>
+                <span>{t('scan_for_inpatient')}</span>
                 <span className="material-symbols-outlined text-[20px] text-white/80">qr_code_2</span>
               </div>
             </div>
@@ -711,7 +727,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
             <div className="p-4 rounded-xl bg-white border border-[#dce9ff] text-xs text-[#40484c] space-y-2">
               <div className="flex items-center gap-2 font-bold text-[#004357]">
                 <span className="material-symbols-outlined text-[18px] text-[#006398]">security</span>
-                <span>HIPAA & ABDM Privacy Guaranteed</span>
+                <span>{t('privacy_guaranteed')}</span>
               </div>
               <p className="text-[11px] leading-relaxed text-[#70787d]">
                 Your health data is locally encrypted. You have granular consent control to hide or
@@ -725,7 +741,7 @@ export const UserRegistrationScreen: React.FC<UserRegistrationScreenProps> = ({
       {/* Footer */}
       <footer className="bg-white border-t border-[#e5eeff] py-3 text-center text-xs text-[#70787d]">
         <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>Medisync Healthcare Ecosystem • Unified Health Interface</span>
+          <span>{t('app_title')} • {t('app_tagline')}</span>
           <span className="text-[11px]">Secure Point-of-Care EHR & Patient Vault</span>
         </div>
       </footer>

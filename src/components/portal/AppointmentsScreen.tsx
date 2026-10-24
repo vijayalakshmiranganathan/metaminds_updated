@@ -133,33 +133,33 @@ END:VCALENDAR`;
       <div className="bg-[#dce9ff] p-1 rounded-xl flex items-center justify-between gap-1 shadow-inner">
         <button
           onClick={() => setActiveTab('doctors')}
-          className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all ${
+          className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer ${
             activeTab === 'doctors'
               ? 'bg-white text-[#004357] shadow-xs'
               : 'text-[#40484c] hover:text-[#0b1c30]'
           }`}
         >
-          Find Doctors
+          {t('find_doctors')}
         </button>
         <button
           onClick={() => setActiveTab('my-appointments')}
-          className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all relative ${
+          className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all relative cursor-pointer ${
             activeTab === 'my-appointments'
               ? 'bg-white text-[#004357] shadow-xs'
               : 'text-[#40484c] hover:text-[#0b1c30]'
           }`}
         >
-          My Bookings ({appointments.length})
+          {t('my_bookings')} ({appointments.length})
         </button>
         <button
           onClick={() => setActiveTab('home-lab')}
-          className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all ${
+          className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer ${
             activeTab === 'home-lab'
               ? 'bg-white text-[#004357] shadow-xs'
               : 'text-[#40484c] hover:text-[#0b1c30]'
           }`}
         >
-          Home Lab Tests
+          {t('home_lab_tests')}
         </button>
       </div>
 
